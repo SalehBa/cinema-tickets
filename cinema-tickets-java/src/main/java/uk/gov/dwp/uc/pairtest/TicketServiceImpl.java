@@ -63,7 +63,7 @@ public class TicketServiceImpl implements TicketService {
         int infantTickets = getNoOfTicketsByType(ticketTypeRequests, TicketTypeRequest.Type.INFANT);
 
         if (infantTickets > adultsTickets) {
-            throw new InvalidPurchaseException();
+            throw new InvalidPurchaseException("The number of Infants should not exceed the number of adults");
         }
     }
 

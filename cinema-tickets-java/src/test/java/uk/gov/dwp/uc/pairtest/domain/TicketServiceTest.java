@@ -113,6 +113,23 @@ public class TicketServiceTest {
     }
 
     @Test
+    public void should_throw_exception_when_number_of_infants_exceed_the_adults(){
+        boolean thrown = false;
+        List<TicketTypeRequest> ticketTypeRequests = Arrays.asList(
+                new TicketTypeRequest(TicketTypeRequest.Type.ADULT, 5),
+                new TicketTypeRequest(TicketTypeRequest.Type.INFANT, 6)
+        );
+
+        try {
+            ticketService.purchaseTickets(1L, ticketTypeRequests.toArray(new TicketTypeRequest[]{}));
+        } catch (InvalidPurchaseException e) {
+            thrown = true;
+            assertEquals("The number of Infants should not exceed the number of adults", e.getMessage());
+        }
+        assertTrue(thrown);
+    }
+
+    @Test
     public void should_calculate_correctly_the_amount_to_pay(){
 
         List<TicketTypeRequest> ticketTypeRequests = Arrays.asList(
