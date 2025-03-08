@@ -1,13 +1,21 @@
 package uk.gov.dwp.uc.pairtest.domain;
 
+import java.util.Map;
+
 /**
  * Immutable Object
  */
 
-public class TicketTypeRequest {
+public final class TicketTypeRequest {
 
-    private int noOfTickets;
-    private Type type;
+    private static final Map<Type, Integer> TICKETS_PRICES =
+            Map.of(
+                    TicketTypeRequest.Type.ADULT, 25,
+                    TicketTypeRequest.Type.CHILD, 15,
+                    TicketTypeRequest.Type.INFANT, 0
+            );
+    private final int noOfTickets;
+    private final Type type;
 
     public TicketTypeRequest(Type type, int noOfTickets) {
         this.type = type;
@@ -20,6 +28,20 @@ public class TicketTypeRequest {
 
     public Type getTicketType() {
         return type;
+    }
+
+    public int getTotalPrice(){
+        return noOfTickets * TICKETS_PRICES.get(type);
+    }
+    public int getSeatsToAllocate(){
+        switch (type){
+            case ADULT:
+            case CHILD:
+                return noOfTickets;
+            case INFANT:
+            default:
+                return 0;
+        }
     }
 
     public enum Type {
