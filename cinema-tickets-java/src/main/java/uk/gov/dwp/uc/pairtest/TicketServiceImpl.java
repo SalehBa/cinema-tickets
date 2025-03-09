@@ -6,9 +6,17 @@ import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest;
 import uk.gov.dwp.uc.pairtest.exception.InvalidPurchaseException;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class TicketServiceImpl implements TicketService {
     public static final int MAX_TICKETS_PER_PURCHACE = 25;
+    public static final Map<TicketTypeRequest.Type, Integer> TICKETS_PRICES =
+            Map.of(
+                    TicketTypeRequest.Type.ADULT, 25,
+                    TicketTypeRequest.Type.CHILD, 15,
+                    TicketTypeRequest.Type.INFANT, 0
+            );
+
     /**
      * Should only have private methods other than the one below.
      */
@@ -69,7 +77,9 @@ public class TicketServiceImpl implements TicketService {
 
 
     private void processPurchace(Long accountId, TicketTypeRequest[] ticketTypeRequests) {
-        int totalAmountToPay = Arrays.stream(ticketTypeRequests).mapToInt(TicketTypeRequest::getTotalPrice).sum();
+        int totalAmountToPay = Arrays.stream(ticketTypeRequests)
+                .mapToInt(ticketTypeRequest -> ticketTypeRequest.getTotalPrice(TICKETS_PRICES))
+                .sum();
         ticketPaymentService.makePayment(accountId, totalAmountToPay);
 
         int totalSeatsToAllocate = Arrays.stream(ticketTypeRequests).mapToInt(TicketTypeRequest::getSeatsToAllocate).sum();
@@ -78,8 +88,8 @@ public class TicketServiceImpl implements TicketService {
 
 
     private int getNoOfTicketsByType(TicketTypeRequest[] ticketTypeRequests, TicketTypeRequest.Type type) {
-        return Arrays.stream(ticketTypeRequests).filter(ticket ->
-                        type.equals(ticket.getTicketType()))
+        return Arrays.stream(ticketTypeRequests)
+                .filter(ticket -> type.equals(ticket.getTicketType()))
                 .mapToInt(TicketTypeRequest::getNoOfTickets)
                 .sum();
     }

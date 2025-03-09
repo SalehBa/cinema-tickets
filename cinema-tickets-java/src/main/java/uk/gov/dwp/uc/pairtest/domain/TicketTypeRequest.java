@@ -2,18 +2,13 @@ package uk.gov.dwp.uc.pairtest.domain;
 
 import java.util.Map;
 
+
 /**
  * Immutable Object
  */
 
 public final class TicketTypeRequest {
 
-    private static final Map<Type, Integer> TICKETS_PRICES =
-            Map.of(
-                    TicketTypeRequest.Type.ADULT, 25,
-                    TicketTypeRequest.Type.CHILD, 15,
-                    TicketTypeRequest.Type.INFANT, 0
-            );
     private final int noOfTickets;
     private final Type type;
 
@@ -30,8 +25,8 @@ public final class TicketTypeRequest {
         return type;
     }
 
-    public int getTotalPrice(){
-        return noOfTickets * TICKETS_PRICES.get(type);
+    public int getTotalPrice(Map<TicketTypeRequest.Type, Integer> currentPrices){
+        return noOfTickets * currentPrices.get(type);
     }
     public int getSeatsToAllocate(){
         switch (type){
